@@ -60,8 +60,8 @@
       <div class="cb-head">
         <span class="cb-head-ic">🤖</span>
         <div class="cb-head-txt">
-          <strong>Tanya Desa</strong>
-          <small><span class="cb-online"></span> Asisten AI informasi desa</small>
+          <strong>Asisten Desa</strong>
+          <small><span class="cb-online"></span> Siap membantu 24 jam</small>
         </div>
         <button class="cb-close" id="cb-close" aria-label="Tutup">×</button>
       </div>
@@ -69,16 +69,19 @@
       <div class="cb-msgs" id="cb-msgs"></div>
 
       <div class="cb-chips" id="cb-chips">
-        <button data-q="Profil desa ini seperti apa?">🏡 Profil desa</button>
-        <button data-q="UMKM apa saja yang ada di desa?">🛍️ UMKM desa</button>
-        <button data-q="Apa agenda kegiatan desa berikutnya?">📅 Agenda</button>
-        <button data-q="Bagaimana cara mengurus KTP dan surat-surat?">📄 Urusan surat</button>
+        <button data-q="Profil desa ini seperti apa?">🏡 Profil Desa</button>
+        <button data-q="UMKM apa saja yang ada di desa?">🛒 UMKM Lokal</button>
+        <button data-q="Apa agenda kegiatan desa yang akan datang?">📅 Agenda Desa</button>
+        <button data-q="Bagaimana cara mengurus surat di desa?">📄 Urus Surat</button>
+        <button data-q="Siapa saja perangkat atau pengurus desa?">👥 Perangkat Desa</button>
+        <button data-q="Bagaimana cara menghubungi kantor desa?">📞 Kontak Desa</button>
       </div>
 
       <form class="cb-inputrow" id="cb-form">
-        <input type="text" id="cb-input" placeholder="Tulis pertanyaan tentang desa…" autocomplete="off" maxlength="500" />
-        <button type="submit" id="cb-send" aria-label="Kirim">➤</button>
+        <input type="text" id="cb-input" placeholder="Ketik pertanyaan Anda di sini…" autocomplete="off" maxlength="500" />
+        <button type="submit" id="cb-send" aria-label="Kirim pesan">➤</button>
       </form>
+      <div class="cb-footer-note">Jawaban dari AI — selalu cek ke kantor desa untuk kepastian.</div>
     </div>
   `;
 
@@ -113,7 +116,7 @@
       t.className = "cb-teaser";
       t.innerHTML =
         '<button class="cb-teaser-close" aria-label="Tutup notifikasi">×</button>' +
-        "<strong>Tanya Desa 🤖</strong><br>Coba tanya apa saja tentang desa ini — saya jawab instan!";
+        "<strong>Halo! Ada yang bisa dibantu? 👋</strong><br>Tanyakan apa saja soal desa ini — saya jawab langsung!";
       const dismiss = () => { try { localStorage.setItem(LS_SEEN, "1"); } catch {} t.remove(); };
       t.querySelector(".cb-teaser-close").addEventListener("click", (e) => { e.stopPropagation(); dismiss(); });
       t.addEventListener("click", () => openPanel());
@@ -171,7 +174,15 @@
     const t = root.querySelector(".cb-teaser");
     if (t) t.remove();
     if (msgs.children.length === 0) addBubble("assistant",
-      "Halo! 👋 Saya Tanya Desa, asisten AI website desa ini. Tanyakan apa saja seputar profil, perangkat desa, UMKM, berita, agenda, atau urusan surat — saya siap membantu!");
+      "Halo, Selamat datang! 👋\n\nSaya adalah Asisten Desa — siap membantu menjawab pertanyaan Anda tentang desa ini.\n\n" +
+      "Anda bisa tanya tentang:\n" +
+      "📋 Profil dan sejarah desa\n" +
+      "👤 Perangkat dan pengurus desa\n" +
+      "📄 Cara mengurus surat & dokumen\n" +
+      "🛒 UMKM dan usaha warga\n" +
+      "📅 Jadwal kegiatan & agenda\n" +
+      "📞 Cara menghubungi kantor desa\n\n" +
+      "Silakan pilih topik di bawah atau ketik pertanyaan Anda sendiri!");
     setTimeout(() => input.focus(), 250);
     if (typeof window.gsap !== "undefined") {
       gsap.fromTo(panel, { opacity: 0, y: 30, scale: 0.96 },
