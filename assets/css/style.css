@@ -34,7 +34,10 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden; /* Cegah geser horizontal yang menyebabkan user keluar dari halaman */
+}
 
 body {
   font-family: var(--font-body);
@@ -885,10 +888,8 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 600; }
 .line-clamp-2, .line-clamp-3 {
   display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden;
 }
-.line-clamp-2 { -webkit-line-clamp: 2; }
-.line-clamp-3 { -webkit-line-clamp: 3; }
-
-.line-clamp-3 { -webkit-line-clamp: 3; }
+.line-clamp-2 { -webkit-line-clamp: 2; line-clamp: 2; }
+.line-clamp-3 { -webkit-line-clamp: 3; line-clamp: 3; }
 
 /* ---- HERO TOP ROW & STATUS BADGE ---- */
 .hero-top-row {

@@ -46,6 +46,11 @@ async function openSection(sectionId) {
   if (target) target.classList.add("active");
   window.scrollTo(0, 0);
 
+  // Tambahkan ke history browser agar swipe-back/tombol kembali kembali ke beranda
+  if (!history.state || history.state.section !== sectionId) {
+    history.pushState({ section: sectionId }, "", "#" + sectionId);
+  }
+
   // Update status tombol navigasi bawah seluler
   document.querySelectorAll(".mobile-bottom-nav .nav-btn").forEach(btn => {
     if (btn.dataset.navSection === sectionId) btn.classList.add("active");
@@ -63,12 +68,35 @@ function backToMenu() {
   document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
   window.scrollTo(0, 0);
 
+  // Reset URL ke akar tanpa hash
+  if (history.state && history.state.section) {
+    history.pushState({}, "", location.pathname);
+  }
+
   // Reset highlight nav bawah ke Home
   document.querySelectorAll(".mobile-bottom-nav .nav-btn").forEach(btn => {
     if (btn.hasAttribute("data-back")) btn.classList.add("active");
     else btn.classList.remove("active");
   });
 }
+
+// Tangani tombol Back browser / swipe-back → kembali ke beranda bukan keluar
+window.addEventListener("popstate", (e) => {
+  // Jika state punya section berarti user sudah di suatu section, tangkap kembali
+  if (!e.state || !e.state.section) {
+    // User sudah benar-benar di root state → tampilkan beranda
+    document.getElementById("hero").style.display = "block";
+    const st = document.querySelector(".section-title");
+    if (st) st.style.display = "block";
+    document.getElementById("menu-grid").style.display = "grid";
+    document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+    window.scrollTo(0, 0);
+  } else {
+    // User mundur ke section lain dalam history — buka section tersebut
+    openSection(e.state.section);
+  }
+});
+
 
 // ---------------------------------------------------------------------
 // MODAL SYSTEM
