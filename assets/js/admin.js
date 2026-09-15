@@ -28,7 +28,15 @@ function imgUrl(path) {
 // Upload file ke storage, return path (atau null)
 async function uploadImage(file, prefix) {
   if (!file) return null;
-  const ext = file.name.split(".").pop();
+  const ext = file.name.split(".").pop().toLowerCase();
+  
+  // Validasi format file untuk menghindari HEIC/TIFF yang rusak di browser
+  const allowed = ["jpg", "jpeg", "png", "webp", "gif"];
+  if (!allowed.includes(ext)) {
+    toast(`Format .${ext} tidak didukung. Gunakan JPG, PNG, atau WEBP.`);
+    return null;
+  }
+  
   const path = `${prefix}_${Date.now()}.${ext}`;
   const { error } = await sb.storage.from(STORAGE_BUCKET).upload(path, file, { upsert: true });
   if (error) { toast("Upload gagal: " + error.message); return null; }

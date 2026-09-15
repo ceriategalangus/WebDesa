@@ -60,10 +60,10 @@
         <div class="field"><label>Nama Desa</label><input id="p_village_name" /></div>
         <div class="field"><label>Motto</label><input id="p_motto" /></div>
         <div class="field"><label>Logo URL (kosongkan jika upload)</label><input id="p_logo_url" /></div>
-        <div class="field"><label>Upload Logo</label><input type="file" id="p_logo_file" accept="image/*" /></div>
+        <div class="field"><label>Upload Logo</label><input type="file" id="p_logo_file" accept="image/jpeg, image/png, image/webp, image/gif" /></div>
         <div class="field"><label>Tahun Berdiri</label><input id="p_tahun_berdiri" placeholder="mis. 1980" /></div>
         <div class="field"><label>Foto Desa (latar hero) — URL</label><input id="p_foto_desa_url" placeholder="https://... atau kosongkan jika upload" /></div>
-        <div class="field"><label>Upload Foto Desa</label><input type="file" id="p_foto_desa_file" accept="image/*" /></div>
+        <div class="field"><label>Upload Foto Desa</label><input type="file" id="p_foto_desa_file" accept="image/jpeg, image/png, image/webp, image/gif" /></div>
         <div class="field"><label>Visi</label><textarea id="p_visi"></textarea></div>
         <div class="field"><label>Misi (satu baris per butir)</label><textarea id="p_misi"></textarea></div>
         <div class="field"><label>Sejarah</label><textarea id="p_sejarah"></textarea></div>
@@ -98,7 +98,7 @@
           <div class="field"><label>Jabatan</label><input id="per_jabatan" required /></div>
           <div class="field"><label>Periode</label><input id="per_periode" /></div>
           <div class="field"><label>Foto URL (opsional)</label><input id="per_foto_url" /></div>
-          <div class="field"><label>Upload Foto</label><input type="file" id="per_foto_file" accept="image/*" /></div>
+          <div class="field"><label>Upload Foto</label><input type="file" id="per_foto_file" accept="image/jpeg, image/png, image/webp, image/gif" /></div>
           <div class="field"><label>Urutan</label><input type="number" id="per_sort" value="0" /></div>
           <div class="field"><label>Tugas & Fungsi</label><textarea id="per_tugas"></textarea></div>
           <div class="field" style="display:flex;align-items:center;gap:10px;margin-top:4px">
@@ -128,7 +128,7 @@
           <div class="field"><label>Jam Buka</label><input id="um_jam_buka" placeholder="mis. Setiap hari, 08.00 - 20.00" /></div>
           <div class="field"><label>URL Maps</label><input id="um_maps_url" /></div>
           <div class="field"><label>Foto URL (opsional)</label><input id="um_foto_url" /></div>
-          <div class="field"><label>Upload Foto</label><input type="file" id="um_foto_file" accept="image/*" /></div>
+          <div class="field"><label>Upload Foto</label><input type="file" id="um_foto_file" accept="image/jpeg, image/png, image/webp, image/gif" /></div>
           <div class="field"><label>Urutan</label><input type="number" id="um_sort" value="0" /></div>
           <button class="btn" type="submit">Simpan</button>
           <button class="btn secondary" type="button" id="um-cancel">Batal</button>
@@ -153,7 +153,7 @@
           <div class="field"><label>Deskripsi</label><textarea id="agn_deskripsi"></textarea></div>
           <div class="field">
             <label>Foto Kegiatan (opsional)</label>
-            <input type="file" id="agn_foto_file" accept="image/*" />
+            <input type="file" id="agn_foto_file" accept="image/jpeg, image/png, image/webp, image/gif" />
             <input type="hidden" id="agn_foto_url" />
             <img id="agn_foto_preview" src="" alt="Preview" style="display:none;width:100%;max-height:160px;object-fit:cover;border-radius:10px;margin-top:8px;" />
           </div>
@@ -217,7 +217,7 @@
           <div class="field"><label>Tanggal</label><input type="date" id="gal_tanggal" /></div>
           <div class="field"><label>Deskripsi</label><textarea id="gal_deskripsi"></textarea></div>
           <div class="field"><label>Foto URL (opsional)</label><input id="gal_foto_url" /></div>
-          <div class="field"><label>Upload Foto</label><input type="file" id="gal_foto_file" accept="image/*" /></div>
+          <div class="field"><label>Upload Foto</label><input type="file" id="gal_foto_file" accept="image/jpeg, image/png, image/webp, image/gif" /></div>
           <div class="field"><label>Urutan</label><input type="number" id="gal_sort" value="0" /></div>
           <button class="btn" type="submit">Simpan</button>
           <button class="btn secondary" type="button" id="gal-cancel">Batal</button>
