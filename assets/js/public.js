@@ -555,7 +555,7 @@ function renderUmkmCards() {
   const list = umkmFilter === "Semua" ? umkmData : umkmData.filter(u => u.kategori === umkmFilter);
   grid.innerHTML = list.map(u => `
     <div class="card card-umkm" data-open="${esc(u.id)}" role="button" tabindex="0">
-      ${u.foto_url ? `<img class="thumb" src="${esc(imgUrl(u.foto_url))}" alt="${esc(u.nama)}" />` : `<div class="thumb thumb-ph">🛍️</div>`}
+      ${u.foto_url ? `<img class="thumb contain" src="${esc(imgUrl(u.foto_url))}" alt="${esc(u.nama)}" />` : `<div class="thumb thumb-ph">🛍️</div>`}
       <div class="body">
         ${u.kategori ? `<span class="badge">${esc(u.kategori)}</span>` : ""}
         <h3>${esc(u.nama)}</h3>
@@ -586,7 +586,7 @@ function renderUmkmCards() {
             ${u.pemilik ? `<div class="meta">Pemilik: ${esc(u.pemilik)}</div>` : ""}
           </div>
         </div>
-        ${u.foto_url ? `<img class="modal-cover" src="${esc(imgUrl(u.foto_url))}" alt="${esc(u.nama)}" />` : `<div class="modal-cover ph">🛍️</div>`}
+        ${u.foto_url ? `<img class="modal-cover contain" src="${esc(imgUrl(u.foto_url))}" alt="${esc(u.nama)}" />` : `<div class="modal-cover ph">🛍️</div>`}
         ${u.deskripsi ? `<div class="modal-block"><p class="modal-par">${esc(u.deskripsi)}</p></div>` : ""}
         <div class="modal-info">
           ${u.alamat ? `<div class="row"><span class="ic">📍</span><span>${esc(u.alamat)}</span></div>` : ""}
@@ -1135,5 +1135,25 @@ function startLiveClock() {
   setInterval(tick, 1000);
 }
 
+// ---------------------------------------------------------------------
+// REALTIME UPDATES (Supabase)
+// ---------------------------------------------------------------------
+function setupRealtime() {
+  sb.channel('public-changes')
+    .on('postgres_changes', { event: '*', schema: 'public' }, payload => {
+      const table = payload.table;
+      if (table === 'umkm') loadUmkm();
+      else if (table === 'berita') loadBerita();
+      else if (table === 'agenda') loadAgenda();
+      else if (table === 'dokumen') loadDokumen();
+      else if (table === 'perangkat_desa') loadPerangkat();
+      else if (table === 'galeri') loadGaleri();
+      else if (table === 'pengaduan') { loadPengaduan(); loadRecentPengaduan(); }
+      else if (table === 'settings') loadProfil();
+    })
+    .subscribe();
+}
+
 init();
 startLiveClock();
+setupRealtime();

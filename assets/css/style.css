@@ -1706,3 +1706,13 @@ a.gnews-link:hover { transform: translateY(-5px) scale(1.01); }
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+
+/* ===== UMKM IMAGE FIT ===== */
+.thumb.contain {
+  object-fit: contain !important;
+  background: var(--cream);
+}
+.modal-cover.contain {
+  object-fit: contain !important;
+  background: var(--cream);
+}
