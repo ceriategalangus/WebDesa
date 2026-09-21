@@ -16,28 +16,29 @@
     if (villageContext) return;
     try {
       const [profRes, perRes, umkmRes] = await Promise.all([
-        sb.from("profil_desa").select("*").single(),
+        sb.from("site_config").select("*").eq("id", 1).single(),
         sb.from("perangkat_desa").select("nama, jabatan").order("sort_order"),
         sb.from("umkm").select("nama, kategori").order("sort_order")
       ]);
       let ctx = "";
       if (profRes.data) {
-        ctx += `Nama Desa: ${profRes.data.village_name || '-'}\n`;
-        ctx += `Motto: ${profRes.data.motto || '-'}\n`;
-        ctx += `Luas: ${profRes.data.luas_wilayah || '-'}, Penduduk: ${profRes.data.jumlah_penduduk || '-'}\n`;
-        ctx += `Alamat: ${profRes.data.alamat_kantor || '-'}, Telepon: ${profRes.data.telepon || '-'}\n`;
+        ctx += "Nama Desa: " + (profRes.data.village_name || "-") + "\n";
+        ctx += "Motto: " + (profRes.data.motto || "-") + "\n";
+        ctx += "Luas: " + (profRes.data.luas_wilayah || "-") + ", Penduduk: " + (profRes.data.jumlah_penduduk || "-") + "\n";
+        ctx += "Alamat: " + (profRes.data.alamat_kantor || "-") + ", Telepon: " + (profRes.data.telepon || "-") + "\n";
       }
       if (perRes.data && perRes.data.length) {
-        ctx += `\nPerangkat Desa: ` + perRes.data.map(p => `${p.nama} (${p.jabatan})`).join(", ");
+        ctx += "\nPerangkat Desa: " + perRes.data.map(function(p) { return p.nama + " (" + p.jabatan + ")"; }).join(", ");
       }
       if (umkmRes.data && umkmRes.data.length) {
-        ctx += `\nUMKM Desa: ` + umkmRes.data.map(u => `${u.nama} (${u.kategori})`).join(", ");
+        ctx += "\nUMKM Desa: " + umkmRes.data.map(function(u) { return u.nama + " (" + (u.kategori || "-") + ")"; }).join(", ");
       }
       villageContext = ctx;
     } catch (e) {
       console.warn("Gagal muat konteks desa untuk chatbot", e);
     }
   }
+
 
   // Batas pemakaian (lindungi kuota free Groq)
   const MIN_GAP_MS = 2000;        // jeda minimal antar kirim
