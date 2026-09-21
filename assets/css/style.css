@@ -1794,3 +1794,17 @@ a.gnews-link:hover { transform: translateY(-5px) scale(1.01); }
   object-fit: contain !important;
   background: var(--cream);
 }
+
+/* FIX RESPONSIVE IMAGES */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* MOBILE PERFORMANCE OPTIMIZATIONS */
+@media (max-width: 767px) {
+  .bg-decor, .hero-glow { display: none !important; }
+  body {
+    background-attachment: scroll !important;
+  }
+}
