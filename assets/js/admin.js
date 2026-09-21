@@ -43,7 +43,8 @@ async function uploadImage(file, prefix) {
   return path;
 }
 
-// Upload dokumen (pdf/word/excel) ke storage
+// Upload dokumen (pdf/word/excel) ke bucket 'documents' (bukan bucket gambar)
+const DOCUMENT_BUCKET = "documents";
 async function uploadDocument(file, prefix) {
   if (!file) return null;
   const ext = file.name.split(".").pop().toLowerCase();
@@ -54,10 +55,12 @@ async function uploadDocument(file, prefix) {
     return null;
   }
   
-  const path = `${prefix}_${Date.now()}.${ext}`;
-  const { error } = await sb.storage.from(STORAGE_BUCKET).upload(path, file, { upsert: true });
+  const safeName = prefix + "_" + Date.now() + "." + ext;
+  const { data, error } = await sb.storage.from(DOCUMENT_BUCKET).upload(safeName, file, { upsert: true });
   if (error) { toast("Upload gagal: " + error.message); return null; }
-  return path;
+  // Langsung kembalikan full public URL agar bisa didownload warga
+  const { data: urlData } = sb.storage.from(DOCUMENT_BUCKET).getPublicUrl(safeName);
+  return urlData.publicUrl;
 }
 
 // ---------------------------------------------------------------------
@@ -353,7 +356,7 @@ document.getElementById("form-dokumen").addEventListener("submit", async (e) => 
   if (file) { 
     const p = await uploadDocument(file, "dokumen"); 
     if (p) {
-      file_url = imgUrl(p); // Wajib simpan full URL agar pengunjung bisa langsung klik
+      file_url = p; // uploadDocument sudah mengembalikan full public URL
     } else {
       return; // Stop jika gagal upload
     }
