@@ -43,8 +43,8 @@ async function uploadImage(file, prefix) {
   return path;
 }
 
-// Upload dokumen (pdf/word/excel) ke bucket 'documents' (bukan bucket gambar)
-const DOCUMENT_BUCKET = "documents";
+// Upload dokumen (pdf/word/excel) ke bucket 'images' (sudah ada & public)
+const DOCUMENT_BUCKET = "images";
 async function uploadDocument(file, prefix) {
   if (!file) return null;
   const ext = file.name.split(".").pop().toLowerCase();
@@ -55,11 +55,21 @@ async function uploadDocument(file, prefix) {
     return null;
   }
   
-  const safeName = prefix + "_" + Date.now() + "." + ext;
-  const { data, error } = await sb.storage.from(DOCUMENT_BUCKET).upload(safeName, file, { upsert: true });
-  if (error) { toast("Upload gagal: " + error.message); return null; }
-  // Langsung kembalikan full public URL agar bisa didownload warga
+  const safeName = "dok_" + Date.now() + "_" + Math.random().toString(36).slice(2,8) + "." + ext;
+  toast("Sedang mengupload file...");
+  const { error } = await sb.storage.from(DOCUMENT_BUCKET).upload(safeName, file, { 
+    upsert: true,
+    contentType: file.type || "application/octet-stream"
+  });
+  if (error) { 
+    toast("Upload gagal: " + error.message); 
+    console.error("Upload error detail:", error);
+    return null; 
+  }
+  // Kembalikan full public URL agar warga bisa download langsung
   const { data: urlData } = sb.storage.from(DOCUMENT_BUCKET).getPublicUrl(safeName);
+  toast("Upload berhasil!");
+  console.log("URL dokumen:", urlData.publicUrl);
   return urlData.publicUrl;
 }
 
