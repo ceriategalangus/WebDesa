@@ -43,6 +43,23 @@ async function uploadImage(file, prefix) {
   return path;
 }
 
+// Upload dokumen (pdf/word/excel) ke storage
+async function uploadDocument(file, prefix) {
+  if (!file) return null;
+  const ext = file.name.split(".").pop().toLowerCase();
+  
+  const allowed = ["pdf", "doc", "docx", "xls", "xlsx"];
+  if (!allowed.includes(ext)) {
+    toast(`Format .${ext} tidak didukung. Gunakan PDF, Word, atau Excel.`);
+    return null;
+  }
+  
+  const path = `${prefix}_${Date.now()}.${ext}`;
+  const { error } = await sb.storage.from(STORAGE_BUCKET).upload(path, file, { upsert: true });
+  if (error) { toast("Upload gagal: " + error.message); return null; }
+  return path;
+}
+
 // ---------------------------------------------------------------------
 // AUTH & SESSION TIMEOUT (12 Jam Inaktivitas)
 // ---------------------------------------------------------------------
@@ -300,7 +317,10 @@ async function loadDokumen() {
 }
 
 document.getElementById("btn-add-dokumen").addEventListener("click", () => {
-  ["dok_id","dok_judul","dok_kategori","dok_deskripsi","dok_file_url","dok_ukuran"].forEach(i => document.getElementById(i).value = "");
+  ["dok_id","dok_judul","dok_kategori","dok_deskripsi","dok_file_url","dok_ukuran","dok_file_upload"].forEach(i => {
+    const el = document.getElementById(i);
+    if(el) el.value = "";
+  });
   document.getElementById("modal-dokumen").style.display = "block";
 });
 document.getElementById("dok-cancel").addEventListener("click", () => document.getElementById("modal-dokumen").style.display = "none");
@@ -314,6 +334,7 @@ window.editDokumen = async (id) => {
   document.getElementById("dok_deskripsi").value = data.deskripsi || "";
   document.getElementById("dok_file_url").value = data.file_url || "";
   document.getElementById("dok_ukuran").value = data.ukuran || "";
+  document.getElementById("dok_file_upload").value = "";
   document.getElementById("modal-dokumen").style.display = "block";
 };
 
@@ -326,12 +347,26 @@ window.delDokumen = async (id) => {
 document.getElementById("form-dokumen").addEventListener("submit", async (e) => {
   e.preventDefault();
   const id = document.getElementById("dok_id").value;
+  let file_url = document.getElementById("dok_file_url").value.trim();
+  const file = document.getElementById("dok_file_upload").files[0];
+  
+  if (file) { 
+    const p = await uploadDocument(file, "dokumen"); 
+    if (p) file_url = p; 
+  }
+
+  // Auto-calculate size if a new file is uploaded and size field is empty
+  let ukuran = document.getElementById("dok_ukuran").value;
+  if (file && !ukuran) {
+    ukuran = (file.size / 1024).toFixed(0) + " KB";
+  }
+
   const row = {
     judul: document.getElementById("dok_judul").value,
     kategori: document.getElementById("dok_kategori").value,
     deskripsi: document.getElementById("dok_deskripsi").value,
-    file_url: document.getElementById("dok_file_url").value,
-    ukuran: document.getElementById("dok_ukuran").value
+    file_url: file_url,
+    ukuran: ukuran
   };
   let res;
   if (id) res = await sb.from("dokumen").update(row).eq("id", id);

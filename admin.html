@@ -216,7 +216,12 @@
           <div class="field"><label>Judul Dokumen / Form</label><input id="dok_judul" required /></div>
           <div class="field"><label>Kategori</label><input id="dok_kategori" placeholder="mis. Formulir / Perdes / Laporan" /></div>
           <div class="field"><label>Deskripsi</label><input id="dok_deskripsi" /></div>
-          <div class="field"><label>URL File Dokumen</label><input id="dok_file_url" required placeholder="https://..." /></div>
+          <div class="field">
+            <label>Upload File Dokumen (PDF, Word, Excel)</label>
+            <input type="file" id="dok_file_upload" accept=".pdf,.doc,.docx,.xls,.xlsx" />
+            <small>Biarkan kosong jika tidak ingin mengubah file saat edit.</small>
+            <input type="hidden" id="dok_file_url" />
+          </div>
           <div class="field"><label>Ukuran File (Opsional)</label><input id="dok_ukuran" placeholder="mis. 250 KB" /></div>
           <button class="btn" type="submit">Simpan</button>
           <button class="btn secondary" type="button" id="dok-cancel">Batal</button>
