@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { message, history } = req.body;
+    const { message, history, system_context } = req.body;
     if (!message) {
       return res.status(400).json({ error: \'Message is required\' });
     }
@@ -17,10 +17,16 @@ export default async function handler(req, res) {
     }
 
     // Bangun payload pesan
+    const basePrompt = \'Kamu adalah asisten pintar bernama Tanya Desa untuk Website Desa. Jawablah dengan ramah, informatif, singkat, dan gunakan bahasa Indonesia yang sopan. Jawablah seputar layanan desa, profil desa, atau hal-hal yang wajar ditanyakan warga.\';
+    
+    const finalSystemPrompt = system_context 
+      ? basePrompt + "\\n\\nBERIKUT ADALAH DATA DESA SAAT INI (Gunakan data ini untuk menjawab jika relevan):\\n" + system_context 
+      : basePrompt;
+
     const messages = [
       {
         role: \'system\',
-        content: \'Kamu adalah asisten pintar bernama Tanya Desa untuk Website Desa. Jawablah dengan ramah, informatif, singkat, dan gunakan bahasa Indonesia yang sopan. Jawablah seputar layanan desa, profil desa, atau hal-hal yang wajar ditanyakan warga.\'
+        content: finalSystemPrompt
       },
       ...(history || []),
       { role: \'user\', content: message }

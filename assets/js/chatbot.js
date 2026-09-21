@@ -11,6 +11,34 @@
 
   const ENDPOINT = "/api/chatbot";
 
+  let villageContext = "";
+  async function loadVillageContext() {
+    if (villageContext) return;
+    try {
+      const [profRes, perRes, umkmRes] = await Promise.all([
+        sb.from("profil_desa").select("*").single(),
+        sb.from("perangkat_desa").select("nama, jabatan").order("sort_order"),
+        sb.from("umkm").select("nama, kategori").order("sort_order")
+      ]);
+      let ctx = "";
+      if (profRes.data) {
+        ctx += `Nama Desa: ${profRes.data.village_name || '-'}\n`;
+        ctx += `Motto: ${profRes.data.motto || '-'}\n`;
+        ctx += `Luas: ${profRes.data.luas_wilayah || '-'}, Penduduk: ${profRes.data.jumlah_penduduk || '-'}\n`;
+        ctx += `Alamat: ${profRes.data.alamat_kantor || '-'}, Telepon: ${profRes.data.telepon || '-'}\n`;
+      }
+      if (perRes.data && perRes.data.length) {
+        ctx += `\nPerangkat Desa: ` + perRes.data.map(p => `${p.nama} (${p.jabatan})`).join(", ");
+      }
+      if (umkmRes.data && umkmRes.data.length) {
+        ctx += `\nUMKM Desa: ` + umkmRes.data.map(u => `${u.nama} (${u.kategori})`).join(", ");
+      }
+      villageContext = ctx;
+    } catch (e) {
+      console.warn("Gagal muat konteks desa untuk chatbot", e);
+    }
+  }
+
   // Batas pemakaian (lindungi kuota free Groq)
   const MIN_GAP_MS = 2000;        // jeda minimal antar kirim
   const DAILY_LIMIT = 30;         // pesan per hari per browser
@@ -116,7 +144,7 @@
       t.innerHTML =
         '<button class="cb-teaser-close" aria-label="Tutup notifikasi">×</button>' +
         "<strong>Halo! Ada yang bisa dibantu? 👋</strong><br>Tanyakan apa saja soal desa ini — saya jawab langsung!";
-      const dismiss = () => { try { localStorage.setItem(LS_SEEN, "1"); } catch {} t.remove(); };
+      const dismiss = () => { try { localStorage.setItem(LS_SEEN, "1"); } catch { } t.remove(); };
       t.querySelector(".cb-teaser-close").addEventListener("click", (e) => { e.stopPropagation(); dismiss(); });
       t.addEventListener("click", () => openPanel());
       root.appendChild(t);
@@ -229,11 +257,17 @@
     typing(true);
     lastSend = now;
 
+    if (!villageContext) await loadVillageContext();
+
     try {
       const r = await fetch(ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: q, history: history.slice(0, -1).slice(-MAX_HISTORY) }),
+        body: JSON.stringify({ 
+          message: q, 
+          history: history.slice(0, -1).slice(-MAX_HISTORY),
+          system_context: villageContext 
+        }),
       });
       const data = await r.json().catch(() => ({}));
 
