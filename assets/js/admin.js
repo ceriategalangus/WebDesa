@@ -151,6 +151,7 @@ function showDash() {
   loadDokumen();
   loadPengaduan();
   loadGaleri();
+  updateStatCards();
 }
 
 // ---------------------------------------------------------------------
@@ -673,3 +674,22 @@ document.getElementById("form-galeri").addEventListener("submit", async (e) => {
   if (res.error) toast("Gagal: " + res.error.message);
   else { toast("Tersimpan ✓"); document.getElementById("modal-galeri").style.display = "none"; loadGaleri(); }
 });
+
+// ---------------------------------------------------------------------
+// STAT CARDS (Dashboard Overview)
+// ---------------------------------------------------------------------
+async function updateStatCards() {
+  const counts = await Promise.all([
+    sb.from("perangkat_desa").select("id", { count: "exact", head: true }),
+    sb.from("umkm").select("id", { count: "exact", head: true }),
+    sb.from("pengaduan").select("id", { count: "exact", head: true }),
+    sb.from("galeri").select("id", { count: "exact", head: true })
+  ]);
+
+  const ids = ["stat-perangkat", "stat-umkm", "stat-pengaduan", "stat-galeri"];
+  counts.forEach((res, i) => {
+    const el = document.getElementById(ids[i]);
+    if (el) el.textContent = res.count ?? "—";
+  });
+}
+

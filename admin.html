@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin - Website Informasi Desa</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=5" />
+  <link rel="stylesheet" href="assets/css/style.css?v=18" />
   <script src="assets/vendor/supabase.js"></script>
   <script src="assets/vendor/gsap.min.js"></script>
 </head>
-<body>
+<body class="admin-body">
   <!-- LOGIN -->
   <div id="auth-screen">
     <div class="auth-wrap">
@@ -56,17 +56,44 @@
 
     <!-- TAB: PROFIL -->
     <div class="tab-panel active" id="tab-profil">
-      <form id="form-profil">
+      <!-- Stat row appears only in profil tab as overview -->
+      <div class="stat-row" id="dash-stats">
+        <div class="stat-card">
+          <div class="stat-icon">👥</div>
+          <div class="stat-num" id="stat-perangkat">—</div>
+          <div class="stat-label">Perangkat</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🛍️</div>
+          <div class="stat-num" id="stat-umkm">—</div>
+          <div class="stat-label">UMKM</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📰</div>
+          <div class="stat-num" id="stat-pengaduan">—</div>
+          <div class="stat-label">Pengaduan</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🖼️</div>
+          <div class="stat-num" id="stat-galeri">—</div>
+          <div class="stat-label">Galeri</div>
+        </div>
+      </div>
+      <form id="form-profil" class="form-card">
+        <div class="form-section">Identitas Desa</div>
         <div class="field"><label>Nama Desa</label><input id="p_village_name" /></div>
         <div class="field"><label>Motto</label><input id="p_motto" /></div>
+        <div class="form-section">Logo & Foto</div>
         <div class="field"><label>Logo URL (kosongkan jika upload)</label><input id="p_logo_url" /></div>
         <div class="field"><label>Upload Logo</label><input type="file" id="p_logo_file" accept="image/jpeg, image/png, image/webp, image/gif" /></div>
         <div class="field"><label>Tahun Berdiri</label><input id="p_tahun_berdiri" placeholder="mis. 1980" /></div>
         <div class="field"><label>Foto Desa (latar hero) — URL</label><input id="p_foto_desa_url" placeholder="https://... atau kosongkan jika upload" /></div>
         <div class="field"><label>Upload Foto Desa</label><input type="file" id="p_foto_desa_file" accept="image/jpeg, image/png, image/webp, image/gif" /></div>
+        <div class="form-section">Visi, Misi & Sejarah</div>
         <div class="field"><label>Visi</label><textarea id="p_visi"></textarea></div>
         <div class="field"><label>Misi (satu baris per butir)</label><textarea id="p_misi"></textarea></div>
         <div class="field"><label>Sejarah</label><textarea id="p_sejarah"></textarea></div>
+        <div class="form-section">Data & Kontak</div>
         <div class="field"><label>Luas Wilayah</label><input id="p_luas_wilayah" /></div>
         <div class="field"><label>Jumlah Penduduk</label><input id="p_jumlah_penduduk" /></div>
         <div class="field"><label>Jumlah Kepala Keluarga</label><input id="p_jumlah_kepala_keluarga" /></div>
@@ -76,23 +103,26 @@
         <div class="field"><label>Email</label><input id="p_email" /></div>
         <div class="field"><label>Jam Layanan</label><input id="p_jam_layanan" placeholder="mis. Senin - Jumat, 08.00 - 16.00 WIB" /></div>
         <div class="field"><label>URL Maps (embed)</label><input id="p_maps_url" placeholder="https://www.google.com/maps/embed?pb=..." /></div>
+        <div class="form-section">Media Sosial</div>
         <div class="field"><label>Facebook</label><input id="p_facebook" /></div>
         <div class="field"><label>Instagram</label><input id="p_instagram" /></div>
         <div class="field"><label>Warna Aksen (hex)</label><input id="p_accent_color" placeholder="#1f7a4d" /></div>
-        <button class="btn" type="submit">Simpan Profil</button>
+        <button class="btn" type="submit" style="margin-top:8px">💾 Simpan Profil</button>
       </form>
     </div>
+
 
     <!-- TAB: PERANGKAT -->
     <div class="tab-panel" id="tab-perangkat">
       <div class="toolbar">
+        <span class="toolbar-title">👥 Daftar Perangkat Desa</span>
         <button class="btn small" id="btn-add-perangkat">+ Tambah Perangkat</button>
       </div>
-      <table class="table" id="table-perangkat"><tbody></tbody></table>
+      <div class="table-wrap"><table class="table" id="table-perangkat"><tbody></tbody></table></div>
 
       <!-- form modal perangkat -->
       <div id="modal-perangkat" style="display:none">
-        <form id="form-perangkat" style="border:1px solid var(--border);padding:16px;border-radius:12px;margin-top:12px">
+        <form id="form-perangkat" class="form-card">
           <input type="hidden" id="per_id" />
           <div class="field"><label>Nama</label><input id="per_nama" required /></div>
           <div class="field"><label>Jabatan</label><input id="per_jabatan" required /></div>
@@ -105,36 +135,48 @@
             <input type="checkbox" id="per_is_kades" style="width:18px;height:18px" />
             <label for="per_is_kades" style="margin:0">Kepala Desa (kartu istimewa)</label>
           </div>
-          <button class="btn" type="submit">Simpan</button>
-          <button class="btn secondary" type="button" id="per-cancel">Batal</button>
+          <div style="display:flex;gap:8px;margin-top:12px">
+            <button class="btn" type="submit">💾 Simpan</button>
+            <button class="btn secondary" type="button" id="per-cancel">Batal</button>
+          </div>
         </form>
       </div>
     </div>
 
+
     <!-- TAB: UMKM -->
     <div class="tab-panel" id="tab-umkm">
-      <div class="toolbar"><button class="btn small" id="btn-add-umkm">+ Tambah UMKM</button></div>
-      <table class="table" id="table-umkm"><tbody></tbody></table>
+      <div class="toolbar">
+        <span class="toolbar-title">🛍️ Direktori UMKM Desa</span>
+        <button class="btn small" id="btn-add-umkm">+ Tambah UMKM</button>
+      </div>
+      <div class="table-wrap"><table class="table" id="table-umkm"><tbody></tbody></table></div>
 
       <div id="modal-umkm" style="display:none">
-        <form id="form-umkm" style="border:1px solid var(--border);padding:16px;border-radius:12px;margin-top:12px">
+        <form id="form-umkm" class="form-card">
           <input type="hidden" id="um_id" />
+          <div class="form-section">Data Usaha</div>
           <div class="field"><label>Nama Usaha</label><input id="um_nama" required /></div>
           <div class="field"><label>Pemilik</label><input id="um_pemilik" /></div>
           <div class="field"><label>Kategori</label><input id="um_kategori" /></div>
           <div class="field"><label>Deskripsi</label><textarea id="um_deskripsi"></textarea></div>
+          <div class="form-section">Kontak & Lokasi</div>
           <div class="field"><label>Kontak (WA)</label><input id="um_kontak" /></div>
           <div class="field"><label>Alamat</label><input id="um_alamat" /></div>
           <div class="field"><label>Jam Buka</label><input id="um_jam_buka" placeholder="mis. Setiap hari, 08.00 - 20.00" /></div>
           <div class="field"><label>URL Maps</label><input id="um_maps_url" /></div>
+          <div class="form-section">Foto</div>
           <div class="field"><label>Foto URL (opsional)</label><input id="um_foto_url" /></div>
           <div class="field"><label>Upload Foto</label><input type="file" id="um_foto_file" accept="image/jpeg, image/png, image/webp, image/gif" /></div>
           <div class="field"><label>Urutan</label><input type="number" id="um_sort" value="0" /></div>
-          <button class="btn" type="submit">Simpan</button>
-          <button class="btn secondary" type="button" id="um-cancel">Batal</button>
+          <div style="display:flex;gap:8px;margin-top:12px">
+            <button class="btn" type="submit">💾 Simpan</button>
+            <button class="btn secondary" type="button" id="um-cancel">Batal</button>
+          </div>
         </form>
       </div>
     </div>
+
 
 
     <!-- TAB: AGENDA -->
@@ -231,6 +273,6 @@
   <div class="toast" id="toast"></div>
 
   <script src="assets/js/config.js?v=4"></script>
-  <script src="assets/js/admin.js?v=11"></script>
+  <script src="assets/js/admin.js?v=12"></script>
 </body>
 </html>
