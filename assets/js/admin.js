@@ -318,15 +318,21 @@ async function loadDokumen() {
     return;
   }
   if (!data || data.length === 0) { tb.innerHTML = `<tr><td class="empty">Belum ada dokumen</td></tr>`; return; }
-  tb.innerHTML = data.map(d => `
+  tb.innerHTML = data.map(d => {
+    const urlOk = d.file_url && d.file_url.startsWith("http");
+    const urlStatus = urlOk 
+      ? `<a href="${esc(d.file_url)}" target="_blank" style="color:green;font-size:11px;">✓ Ada file</a>`
+      : `<span style="color:red;font-size:11px;">⚠️ File belum diupload — edit & upload ulang</span>`;
+    return `
     <tr>
       <td>📄</td>
-      <td><b>${esc(d.judul)}</b><br><span style="color:var(--muted)">${esc(d.kategori || "")} · ${esc(d.ukuran || "")}</span></td>
+      <td><b>${esc(d.judul)}</b><br><span style="color:var(--muted)">${esc(d.kategori || "")} · ${esc(d.ukuran || "")}</span><br>${urlStatus}</td>
       <td>
         <button class="btn small" onclick="editDokumen('${esc(d.id)}')">Edit</button>
         <button class="btn danger small" onclick="delDokumen('${esc(d.id)}')">Hapus</button>
       </td>
-    </tr>`).join("");
+    </tr>`;
+  }).join("");
 }
 
 document.getElementById("btn-add-dokumen").addEventListener("click", () => {
