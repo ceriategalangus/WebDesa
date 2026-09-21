@@ -44,7 +44,7 @@ export default async function handler(req, res) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "llama-3.1-8b-instant",
+        model: "llama-3.3-70b-versatile",
         messages: messages,
         temperature: 0.6,
         max_tokens: 500
@@ -53,7 +53,8 @@ export default async function handler(req, res) {
 
     if (!groqRes.ok) {
       const errText = await groqRes.text();
-      throw new Error("Groq Error " + groqRes.status + ": " + errText);
+      console.error("Groq HTTP Error", groqRes.status, errText);
+      return res.status(500).json({ error: "Groq Error " + groqRes.status + ": " + errText });
     }
 
     const data = await groqRes.json();
