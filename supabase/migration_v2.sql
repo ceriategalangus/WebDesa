@@ -57,9 +57,11 @@ create table if not exists public.galeri (
 
 alter table public.galeri enable row level security;
 
+drop policy if exists "public_read_galeri" on public.galeri;
 create policy "public_read_galeri" on public.galeri
   for select using (true);
 
+drop policy if exists "admin_write_galeri" on public.galeri;
 create policy "admin_write_galeri" on public.galeri
   for all using (auth.role() = 'authenticated')
   with check (auth.role() = 'authenticated');
