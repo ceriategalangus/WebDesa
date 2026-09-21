@@ -36,6 +36,38 @@ export default async function handler(req, res) {
       { role: "user", content: message }
     ];
 
+    // 1. Fetch daftar model yang tersedia untuk API Key ini
+    let selectedModel = "llama3-8b-8192"; // default fallback
+    try {
+      const modelsRes = await fetch("https://api.groq.com/openai/v1/models", {
+        headers: { "Authorization": "Bearer " + GROQ_API_KEY }
+      });
+      if (modelsRes.ok) {
+        const modelsData = await modelsRes.json();
+        const availableModels = modelsData.data ? modelsData.data.map(m => m.id) : [];
+        
+        // Cari model chat yang valid (hindari whisper/audio/guard)
+        const chatModels = availableModels.filter(m => 
+          !m.includes("whisper") && !m.includes("guard") && !m.includes("audio")
+        );
+        
+        // Prioritaskan Llama 3.3/3.1, lalu Mixtral, lalu Gemma, lalu model chat apa saja
+        const bestModel = 
+          chatModels.find(m => m.includes("llama-3.3")) ||
+          chatModels.find(m => m.includes("llama-3.1")) ||
+          chatModels.find(m => m.includes("llama")) ||
+          chatModels.find(m => m.includes("mixtral")) ||
+          chatModels.find(m => m.includes("gemma")) ||
+          chatModels[0]; // ambil apapun yang tersisa
+          
+        if (bestModel) {
+          selectedModel = bestModel;
+        }
+      }
+    } catch (e) {
+      console.warn("Gagal fetch models list, menggunakan fallback.", e);
+    }
+
     // Panggil Groq API
     const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
@@ -44,7 +76,7 @@ export default async function handler(req, res) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "llama3-8b-8192",
+        model: selectedModel,
         messages: messages,
         temperature: 0.6,
         max_tokens: 500
