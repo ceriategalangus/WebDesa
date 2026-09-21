@@ -9,8 +9,7 @@
 (function () {
   "use strict";
 
-  const ENDPOINT = SUPABASE_URL.replace(/\/+$/, "") + "/functions/v1/chatbot";
-  const ANON_KEY = SUPABASE_ANON_KEY;
+  const ENDPOINT = "/api/chatbot";
 
   // Batas pemakaian (lindungi kuota free Groq)
   const MIN_GAP_MS = 2000;        // jeda minimal antar kirim
@@ -233,8 +232,8 @@
     try {
       const r = await fetch(ENDPOINT, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${ANON_KEY}`, apikey: ANON_KEY },
-        body: JSON.stringify({ messages: history.slice(-MAX_HISTORY) }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: q, history: history.slice(0, -1).slice(-MAX_HISTORY) }),
       });
       const data = await r.json().catch(() => ({}));
 
