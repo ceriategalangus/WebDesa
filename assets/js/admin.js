@@ -352,13 +352,18 @@ document.getElementById("form-dokumen").addEventListener("submit", async (e) => 
   
   if (file) { 
     const p = await uploadDocument(file, "dokumen"); 
-    if (p) file_url = p; 
+    if (p) {
+      file_url = imgUrl(p); // Wajib simpan full URL agar pengunjung bisa langsung klik
+    } else {
+      return; // Stop jika gagal upload
+    }
   }
 
   // Auto-calculate size if a new file is uploaded and size field is empty
   let ukuran = document.getElementById("dok_ukuran").value;
   if (file && !ukuran) {
-    ukuran = (file.size / 1024).toFixed(0) + " KB";
+    let kb = file.size / 1024;
+    ukuran = kb > 1024 ? (kb / 1024).toFixed(2) + " MB" : Math.round(kb) + " KB";
   }
 
   const row = {
