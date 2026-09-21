@@ -777,19 +777,29 @@ async function loadDokumen() {
     return;
   }
 
-  el.innerHTML = `<div class="dokumen-grid">` + data.map(d => `
+  el.innerHTML = `<div class="dokumen-grid">` + data.map(d => {
+    // Konversi path relatif ke full URL Supabase (sama seperti foto)
+    const fullUrl = imgUrl(d.file_url);
+    const ext = d.file_url ? d.file_url.split('.').pop().toLowerCase() : '';
+    const icon = ext === 'pdf' ? '📕' : (ext === 'xlsx' || ext === 'xls') ? '📗' : '📘';
+    const hasFile = fullUrl && fullUrl.startsWith('http');
+    return `
     <div class="dokumen-card">
       <div class="dokumen-left">
-        <div class="dokumen-icon">📄</div>
+        <div class="dokumen-icon">${icon}</div>
         <div class="dokumen-info">
           <h4>${esc(d.judul)}</h4>
           <p>${esc(d.kategori || "Dokumen")} ${d.ukuran ? `· ${esc(d.ukuran)}` : ""}</p>
           ${d.deskripsi ? `<p style="font-size:12px;margin-top:2px">${esc(d.deskripsi)}</p>` : ""}
         </div>
       </div>
-      <a class="btn-download" href="${esc(d.file_url)}" target="_blank" download>⬇ Unduh</a>
+      ${hasFile 
+        ? `<a class="btn-download" href="${fullUrl}" target="_blank" download>⬇ Unduh</a>`
+        : `<span class="btn-download" style="opacity:0.4;cursor:not-allowed;">Belum ada file</span>`
+      }
     </div>
-  `).join("") + `</div>`;
+  `}).join("") + `</div>`;
+}
 }
 
 // ---------------------------------------------------------------------
