@@ -1,15 +1,21 @@
-// api/debug.js — Cek apakah GROQ_API_KEY sudah terbaca (hapus setelah selesai debug)
+// api/debug.js — Cek GROQ_API_KEY dan list models
 export default async function handler(req, res) {
   const key = process.env.GROQ_API_KEY;
   if (!key) {
-    return res.status(200).json({ 
-      status: "MISSING",
-      message: "GROQ_API_KEY belum ada di environment Vercel. Harap tambahkan lalu Redeploy."
-    });
+    return res.status(200).json({ status: "MISSING", message: "GROQ_API_KEY belum ada." });
   }
-  return res.status(200).json({ 
-    status: "OK", 
-    message: "GROQ_API_KEY ditemukan!",
-    prefix: key.substring(0, 8) + "..." // tampilkan sebagian saja (aman)
-  });
+  
+  try {
+    const modelsRes = await fetch("https://api.groq.com/openai/v1/models", {
+      headers: { "Authorization": "Bearer " + key }
+    });
+    const modelsData = await modelsRes.json();
+    return res.status(200).json({
+      status: "OK",
+      models: modelsData.data ? modelsData.data.map(m => m.id) : modelsData
+    });
+  } catch(e) {
+    return res.status(500).json({ error: e.message });
+  }
 }
+
