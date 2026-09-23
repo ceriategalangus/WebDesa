@@ -3,8 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin - Website Informasi Desa</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=18" />
+  <title>Admin Panel — Website Informasi Desa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css?v=19" />
   <script src="assets/vendor/supabase.js"></script>
   <script src="assets/vendor/gsap.min.js"></script>
 </head>
@@ -13,6 +16,7 @@
   <div id="auth-screen">
     <div class="auth-wrap">
       <h2>🔐 Login Admin</h2>
+      <p class="auth-sub">Panel pengelolaan Website Informasi Desa</p>
       <div class="field">
         <label>Email Admin</label>
         <input type="email" id="email" placeholder="admin@desa.id" />
@@ -22,7 +26,7 @@
         <input type="password" id="password" placeholder="••••••••" />
       </div>
       <button class="btn full" id="btn-login">Masuk Dashboard</button>
-      <p id="auth-msg" style="color:#d9534f;font-size:13px;margin-top:10px;text-align:center"></p>
+      <p id="auth-msg" style="color:#c0504c;font-size:13px;margin-top:10px;text-align:center"></p>
     </div>
   </div>
 
@@ -31,10 +35,17 @@
     <div class="dashboard">
       <!-- SIDEBAR -->
       <aside class="sidebar">
-        <div class="brand">
-          <span class="logo-sm">⚙️</span>
-          <span>Admin Desa</span>
+        <div class="sidebar-top">
+          <div class="brand">
+            <span class="logo-sm">⚙️</span>
+            <div class="brand-text">
+              <div class="brand-name">Admin Desa</div>
+              <div class="brand-sub">Panel Pengelolaan</div>
+            </div>
+          </div>
+          <div class="logout" id="btn-logout">⎋ Keluar</div>
         </div>
+        <div class="sidebar-divider"></div>
         <nav class="nav">
           <div class="nav-item active" data-tab="profil">🏡 Profil Desa</div>
           <div class="nav-item" data-tab="perangkat">👥 Perangkat</div>
@@ -44,7 +55,6 @@
           <div class="nav-item" data-tab="pengaduan">💬 Pengaduan</div>
           <div class="nav-item" data-tab="galeri">🖼️ Galeri</div>
         </nav>
-        <div class="logout" id="btn-logout">⎋ Keluar</div>
       </aside>
 
       <!-- MAIN -->
@@ -185,7 +195,7 @@
       <table class="table" id="table-agenda"><tbody></tbody></table>
 
       <div id="modal-agenda" style="display:none">
-        <form id="form-agenda" style="border:1px solid var(--border);padding:16px;border-radius:12px;margin-top:12px">
+        <form id="form-agenda" class="form-card">
           <input type="hidden" id="agn_id" />
           <div class="field"><label>Judul Kegiatan</label><input id="agn_judul" required /></div>
           <div class="field"><label>Tanggal</label><input type="date" id="agn_tanggal" required /></div>
@@ -199,8 +209,10 @@
             <input type="hidden" id="agn_foto_url" />
             <img id="agn_foto_preview" src="" alt="Preview" style="display:none;width:100%;max-height:160px;object-fit:cover;border-radius:10px;margin-top:8px;" />
           </div>
-          <button class="btn" type="submit">Simpan</button>
-          <button class="btn secondary" type="button" id="agn-cancel">Batal</button>
+          <div style="display:flex;gap:8px;margin-top:4px">
+            <button class="btn" type="submit">💾 Simpan</button>
+            <button class="btn secondary" type="button" id="agn-cancel">Batal</button>
+          </div>
         </form>
       </div>
     </div>
@@ -211,7 +223,7 @@
       <table class="table" id="table-dokumen"><tbody></tbody></table>
 
       <div id="modal-dokumen" style="display:none">
-        <form id="form-dokumen" style="border:1px solid var(--border);padding:16px;border-radius:12px;margin-top:12px">
+        <form id="form-dokumen" class="form-card">
           <input type="hidden" id="dok_id" />
           <div class="field"><label>Judul Dokumen / Form</label><input id="dok_judul" required /></div>
           <div class="field"><label>Kategori</label><input id="dok_kategori" placeholder="mis. Formulir / Perdes / Laporan" /></div>
@@ -219,12 +231,14 @@
           <div class="field">
             <label>Upload File Dokumen (PDF, Word, Excel)</label>
             <input type="file" id="dok_file_upload" accept=".pdf,.doc,.docx,.xls,.xlsx" />
-            <small>Biarkan kosong jika tidak ingin mengubah file saat edit.</small>
+            <small style="color:var(--muted);font-size:12px;margin-top:4px;display:block">Biarkan kosong jika tidak ingin mengubah file saat edit.</small>
             <input type="hidden" id="dok_file_url" />
           </div>
           <div class="field"><label>Ukuran File (Opsional)</label><input id="dok_ukuran" placeholder="mis. 250 KB" /></div>
-          <button class="btn" type="submit">Simpan</button>
-          <button class="btn secondary" type="button" id="dok-cancel">Batal</button>
+          <div style="display:flex;gap:8px;margin-top:4px">
+            <button class="btn" type="submit">💾 Simpan</button>
+            <button class="btn secondary" type="button" id="dok-cancel">Batal</button>
+          </div>
         </form>
       </div>
     </div>
@@ -235,18 +249,20 @@
       <table class="table" id="table-pengaduan"><tbody></tbody></table>
 
       <div id="modal-pengaduan" style="display:none">
-        <form id="form-pengaduan-admin" style="border:1px solid var(--border);padding:16px;border-radius:12px;margin-top:12px">
+        <form id="form-pengaduan-admin" class="form-card">
           <input type="hidden" id="pg_admin_id" />
           <div class="field"><label>Status Pengaduan</label>
-            <select id="pg_admin_status" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border)">
+            <select id="pg_admin_status">
               <option value="Pending">Pending (Belum Diproses)</option>
               <option value="Diproses">Diproses</option>
               <option value="Selesai">Selesai / Ditindaklanjuti</option>
             </select>
           </div>
           <div class="field"><label>Tanggapan / Catatan Admin</label><textarea id="pg_admin_tanggapan" placeholder="Tuliskan tanggapan atau tindakan yang telah diambil..."></textarea></div>
-          <button class="btn" type="submit">Simpan Tanggapan</button>
-          <button class="btn secondary" type="button" id="pg-admin-cancel">Batal</button>
+          <div style="display:flex;gap:8px;margin-top:4px">
+            <button class="btn" type="submit">💾 Simpan Tanggapan</button>
+            <button class="btn secondary" type="button" id="pg-admin-cancel">Batal</button>
+          </div>
         </form>
       </div>
     </div>
@@ -257,7 +273,7 @@
       <table class="table" id="table-galeri"><tbody></tbody></table>
 
       <div id="modal-galeri" style="display:none">
-        <form id="form-galeri" style="border:1px solid var(--border);padding:16px;border-radius:12px;margin-top:12px">
+        <form id="form-galeri" class="form-card">
           <input type="hidden" id="gal_id" />
           <div class="field"><label>Judul</label><input id="gal_judul" required /></div>
           <div class="field"><label>Kategori</label><input id="gal_kategori" placeholder="mis. Kegiatan / Wisata / Pembangunan" /></div>
@@ -266,8 +282,10 @@
           <div class="field"><label>Foto URL (opsional)</label><input id="gal_foto_url" /></div>
           <div class="field"><label>Upload Foto</label><input type="file" id="gal_foto_file" accept="image/jpeg, image/png, image/webp, image/gif" /></div>
           <div class="field"><label>Urutan</label><input type="number" id="gal_sort" value="0" /></div>
-          <button class="btn" type="submit">Simpan</button>
-          <button class="btn secondary" type="button" id="gal-cancel">Batal</button>
+          <div style="display:flex;gap:8px;margin-top:4px">
+            <button class="btn" type="submit">💾 Simpan</button>
+            <button class="btn secondary" type="button" id="gal-cancel">Batal</button>
+          </div>
         </form>
       </div>
     </div>
