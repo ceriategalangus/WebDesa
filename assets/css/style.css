@@ -518,6 +518,13 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 600; }
     #edf0ed;
   background-attachment: fixed;
 }
+/* Kunci scroll body pada desktop — scroll hanya terjadi di .main */
+@media (min-width: 768px) {
+  body.admin-body {
+    overflow: hidden;
+    height: 100vh;
+  }
+}
 
 .auth-wrap {
   max-width: 400px;
@@ -687,7 +694,7 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 600; }
 }
 
 /* ---- MAIN CONTENT ---- */
-.main { padding: 18px 16px; min-height: 100vh; background: #edf0ed; min-width: 0; }
+.main { padding: 18px 16px; min-height: 0; background: #edf0ed; min-width: 0; }
 
 .topbar {
   display: flex; align-items: center; justify-content: space-between;
@@ -1758,7 +1765,6 @@ a.gnews-link:hover { transform: translateY(-5px) scale(1.01); }
     font-size: 14px;
     border-radius: 12px;
   }
-  .main { padding: 28px 26px; }
   .table td, .table th { padding: 12px 16px; }
 }
 
