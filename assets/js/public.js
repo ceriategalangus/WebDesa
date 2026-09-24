@@ -794,7 +794,7 @@ async function loadDokumen() {
         </div>
       </div>
       ${hasFile 
-        ? `<a class="btn-download" href="${fullUrl}" target="_blank" download>⬇ Unduh</a>`
+        ? `<a class="btn-download" href="${fullUrl}?download=" target="_blank" download>⬇ Unduh</a>`
         : `<span class="btn-download" style="opacity:0.4;cursor:not-allowed;">Belum ada file</span>`
       }
     </div>

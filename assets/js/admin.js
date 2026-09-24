@@ -43,8 +43,8 @@ async function uploadImage(file, prefix) {
   return path;
 }
 
-// Upload dokumen (pdf/word/excel) ke bucket 'images' (sudah ada & public)
-const DOCUMENT_BUCKET = "images";
+// Upload dokumen (pdf/word/excel) ke bucket 'documents'
+const DOCUMENT_BUCKET = "documents";
 async function uploadDocument(file, prefix) {
   if (!file) return null;
   const ext = file.name.split(".").pop().toLowerCase();
